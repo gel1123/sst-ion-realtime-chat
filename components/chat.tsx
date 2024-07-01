@@ -31,7 +31,6 @@ export default function Chat({
     useState<mqtt.MqttClientConnection | null>(null);
 
   useEffect(() => {
-    console.log("接続用インスタンスを作成", { topic, endpoint, authorizer });
     const _connection = createConnection(endpoint, authorizer);
 
     // 接続確立時の処理
@@ -39,7 +38,6 @@ export default function Chat({
       try {
         await _connection.subscribe(topic, mqtt.QoS.AtLeastOnce);
         setConnection(_connection);
-        console.log("接続完了", { topic });
       } catch (e) {}
     });
 
@@ -59,12 +57,21 @@ export default function Chat({
     return () => {
       _connection.disconnect();
       setConnection(null);
-      console.log("接続を切断", { topic });
     };
   }, [topic, endpoint, authorizer]);
 
   return (
-    <div className="gap-4 w-96 flex p-4 border rounded-lg flex-col-reverse">
+    <div className="min-h-screen max-h-screen w-96 mx-auto flex flex-col gap-4 p-4">
+      <div className="flex-grow gap-4 flex p-4 border rounded-lg flex-col overflow-y-scroll">
+        {connection && messages.length > 0 && (
+          
+            messages.map((msg, i) => (
+              <div key={i} className="leading-tight pb-2 border-b">
+                {msg}
+              </div>
+            ))
+        )}
+      </div>
       <form
         className="flex gap-2"
         onSubmit={async (e) => {
@@ -77,7 +84,7 @@ export default function Chat({
         }}
       >
         <input
-          className="flex-grow text-sm p-2 rounded-lg border"
+          className="flex-grow text-sm p-2 rounded-lg border bg-transparent"
           required
           autoFocus
           type="text"
@@ -92,15 +99,6 @@ export default function Chat({
           送信
         </button>
       </form>
-      {connection && messages.length > 0 && (
-        <div className="pb-1 border-b">
-          {messages.map((msg, i) => (
-            <div key={i} className="leading-tight pb-2">
-              {msg}
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
