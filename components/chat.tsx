@@ -13,7 +13,7 @@ function createConnection(endpoint: string, authorizer: string) {
       .with_client_id(`client_${id}`)
       .with_endpoint(endpoint)
       .with_custom_authorizer("", authorizer, "", "PLACEHOLDER_TOKEN")
-      .build()
+      .build(),
   );
 }
 
@@ -61,16 +61,15 @@ export default function Chat({
   }, [topic, endpoint, authorizer]);
 
   return (
-    <div className="min-h-screen max-h-screen w-96 mx-auto flex flex-col gap-4 p-4">
-      <div className="flex-grow gap-4 flex p-4 border rounded-lg flex-col overflow-y-scroll">
-        {connection && messages.length > 0 && (
-          
-            messages.map((msg, i) => (
-              <div key={i} className="leading-tight pb-2 border-b">
-                {msg}
-              </div>
-            ))
-        )}
+    <div className="mx-auto flex max-h-screen min-h-screen w-96 flex-col gap-4 p-4">
+      <div className="flex flex-grow flex-col gap-4 overflow-y-scroll rounded-lg border p-4">
+        {connection &&
+          messages.length > 0 &&
+          messages.map((msg, i) => (
+            <div key={i} className="border-b pb-2 leading-tight">
+              {msg}
+            </div>
+          ))}
       </div>
       <form
         className="flex gap-2"
@@ -84,7 +83,7 @@ export default function Chat({
         }}
       >
         <input
-          className="flex-grow text-sm p-2 rounded-lg border bg-transparent"
+          className="flex-grow rounded-lg border bg-transparent p-2 text-sm"
           required
           autoFocus
           type="text"
@@ -92,7 +91,7 @@ export default function Chat({
           placeholder={connection ? "なんでも話してね" : "接続中です"}
         />
         <button
-          className="text-sm font-medium p-2 rounded-lg border"
+          className="rounded-lg border p-2 text-sm font-medium"
           type="submit"
           disabled={connection === null}
         >
